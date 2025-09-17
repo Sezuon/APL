@@ -2,8 +2,8 @@
 #include "Common.h"
 #endif
 
-#ifdef __WINDOWS__
-#include <WinSock2>
+#ifdef _WIN32
+#include <WinSock2.h>
 #endif
 
 #ifdef __linux__

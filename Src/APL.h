@@ -1,4 +1,4 @@
-#ifdef __WINDOWS__
+#ifdef _WIN32
 VOID Main();
 INT WINAPI wWinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ INT)
 {

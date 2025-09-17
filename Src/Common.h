@@ -1,5 +1,6 @@
 #define _APL_Common_Header
-#ifdef __WIN64__
+
+#ifdef _WIN32
 #include <Windows.h>
 #undef VOID
 typedef void VOID;

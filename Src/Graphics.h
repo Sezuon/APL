@@ -4,7 +4,7 @@
 #include "Common.h"
 #endif
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 #include <dcomp.h>
 #include <dxgi1_3.h>
 #include <d3d12.h>

@@ -4,7 +4,7 @@
 #include "Common.h"
 #endif
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 //This is global instead of being inside of the G3DClock class because only one copy of this is needed
 //and there is no point in calling QueryPerformanceFrequency for every G3DClock object.
 LARGE_INTEGER _APL_Clock_Frequency;

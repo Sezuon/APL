@@ -4,7 +4,7 @@
 #include "Common.h"
 #endif
 
-#ifdef __WINDOWS__
+#ifdef _WIN32
 namespace APL
 {
 	DWORD NewGranularity;
