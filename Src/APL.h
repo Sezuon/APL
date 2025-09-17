@@ -35,6 +35,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ INT)
 //Need to handle WM_DISPLAYCHANGE.
 //G3DNew needs allocate memory in multiples of the Alloc.
 //Dont forget about the DXGI/D3D debug layer.
+//In the docs mention the need for -mwindows -municode.
 
 #ifdef __linux__
 VOID Main();
