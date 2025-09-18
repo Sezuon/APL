@@ -4,9 +4,6 @@
 #define IIDPPV IID_PPV_ARGS
 #undef GetMonitorInfo
 
-#undef VOID
-typedef void VOID;
-
 //A "Smart" COM ptr used by APL.
 //Release is only ever called in the destructor. So if you recreate one of these objects, call the destructor first.
 template <typename _APL_InterfaceType>
