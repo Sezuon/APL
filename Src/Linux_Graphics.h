@@ -173,7 +173,7 @@ namespace APL
 
 INT _APL_GraphicsSetup()
 {
-	char* XdgRuntimeDir = std::getenv("XDG_RUNTIME_DIR");
+	LPCHAR XdgRuntimeDir = std::getenv("XDG_RUNTIME_DIR");
 	if(XdgRuntimeDir == 0)
 		return 1;
 

@@ -23,6 +23,7 @@ typedef DOUBLE* LPDOUBLE;
 #include <cstdlib>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <Vulkan.h>
 typedef void VOID;
 typedef char CHAR;
 typedef wchar_t WCHAR;
