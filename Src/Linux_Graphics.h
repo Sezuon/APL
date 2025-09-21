@@ -168,3 +168,24 @@ namespace APL
 
 	};
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+INT _APL_GraphicsSetup()
+{
+	char* XdgRuntimeDir = std::getenv("XDG_RUNTIME_DIR");
+	if(XdgRuntimeDir == 0)
+		return 1;
+
+	UINT XdgRuntimeDirLength{};
+	for(; XdgRuntimeDir[XdgRuntimeDirLength++] != *"\0";)
+		;
+
+	sockaddr_un Addr{AF_UNIX};
+	if(XdgRuntimeDirLength > sizeof(Addr.sun_path))
+		return 1;
+
+	memcpy(Addr.sun_path, XdgRuntimeDir, XdgRuntimeDirLength);
+	
+	return 1;
+}

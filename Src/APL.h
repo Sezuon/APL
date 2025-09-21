@@ -41,19 +41,9 @@ INT WINAPI wWinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ INT)
 VOID Main();
 INT main()
 {
-	LPCHAR XdgRuntimeDir = std::getenv("XDG_RUNTIME_DIR");
-	if(XdgRuntimeDir == 0)
+	if(!_APL_GraphicsSetup())
 		return 1;
-
-	UINT XdgRuntimeDirLength{};
-	for(; XdgRuntimeDir[XdgRuntimeDirLength++] != *"\0";)
-		;
-
-	sockaddr_un Addr{AF_UNIX};
-	if(XdgRuntimeDirLength > sizeof(Addr.sun_path))
-		return 1;
-	memcpy(Addr.sun_path, XdgRuntimeDir, XdgRuntimeDirLength);
-
+	
 	Main();
 
 	return 0;
