@@ -217,7 +217,8 @@ namespace APL
 		}
 		VOID SetViewPort(ViewPort* pViewPort, UINT TotalViewPorts)
 		{
-			D3D12_VIEWPORT vp{ pViewPort->xPos, pViewPort->yPos, pViewPort->Width, pViewPort->Height, pViewPort->MinDepth, pViewPort->MaxDepth};
+			D3D12_VIEWPORT vp;
+			memcpy(&vp, pViewPort, sizeof(vp));
 			pCommandList->RSSetViewports(TotalViewPorts, &vp);
 		}
 		VOID SetScissorRect(Rect* pRects, UINT TotalRects)
