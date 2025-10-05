@@ -266,41 +266,12 @@ namespace APL
 	};
 	//typedef INT(*WindowSetupProc)();
 	typedef VOID(*DrawProc)(GraphicsContext);
-
-	enum InputType
-	{
-		Keyboard, Mouse, Close
-	};
-	enum MouseFlags
-	{
-		LMBDown = 0x1,
-		LMBUp = 0x2,
-	};
-	struct InputData
-	{
-		InputType Type;
-		union
-		{
-			struct
-			{
-				USHORT MakeCode;
-				USHORT Flags;
-			}Keyboard;
-			struct
-			{
-				USHORT ButtonFlags;
-				USHORT ButtonData;
-				USHORT LastX;
-				USHORT LastY;
-			}Mouse;
-			HWND Hwnd;
-		};
-	};
-
+	
+	class Window;
 	struct WindowDesc
 	{
 		Rect Rect;
-		HWND ParentHwnd;
+		Window* pParent;
 		DrawProc pDrawProc;
 	};
 	//You MUST declare this variable AFTER all resource variables it uses. See example for more info.
@@ -329,10 +300,53 @@ namespace APL
 		{
 			return Rect;
 		}
-		HWND GetHwnd()
+		/*bool operator==(APL::WindowReference wr)
 		{
-			return Hwnd;
+			if(wr.Hwnd == this->Hwnd)
+				return true;
+			return false;
+		}*/
+	};
+	struct WindowReference
+	{
+		HWND Hwnd;
+		bool operator==(Window w)
+		{
+			_APL_Window& W = (_APL_Window&)w;
+			if(W.Hwnd == this->Hwnd)
+				return true;
+			return false;
 		}
+	};
+	
+	enum InputType
+	{
+		Keyboard, Mouse, Close
+	};
+	enum MouseFlags
+	{
+		LMBDown = 0x1,
+		LMBUp = 0x2,
+	};
+	struct InputData
+	{
+		InputType Type;
+		union
+		{
+			struct
+			{
+				USHORT MakeCode;
+				USHORT Flags;
+			}Keyboard;
+			struct
+			{
+				USHORT ButtonFlags;
+				USHORT ButtonData;
+				USHORT LastX;
+				USHORT LastY;
+			}Mouse;
+			WindowReference Window;
+		};
 	};
 }
 
@@ -391,7 +405,7 @@ LRESULT WINAPI _APL_WindowProc(HWND Hwnd, UINT Msg, WPARAM Wp, LPARAM Lp)
 	{
 		APL::InputData Input{};
 		Input.Type = APL::InputType::Close;
-		Input.Hwnd = Hwnd;
+		Input.Window.Hwnd = Hwnd;
 
 		WaitForSingleObject(_APL_InputReceivedEvent, INFINITE);
 		memcpy(&_APL_Input, &Input, sizeof(Input));
@@ -402,7 +416,8 @@ LRESULT WINAPI _APL_WindowProc(HWND Hwnd, UINT Msg, WPARAM Wp, LPARAM Lp)
 	case WM_APP:
 	{
 		APL::WindowDesc* pDesc = (APL::WindowDesc*)Wp;
-		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, pDesc->Rect.left, pDesc->Rect.top, pDesc->Rect.right - pDesc->Rect.left, pDesc->Rect.bottom - pDesc->Rect.top, pDesc->ParentHwnd, 0, 0, 0);
+		_APL_Window* pWindow = (_APL_Window*)pDesc->pParent;
+		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, pDesc->Rect.left, pDesc->Rect.top, pDesc->Rect.right - pDesc->Rect.left, pDesc->Rect.bottom - pDesc->Rect.top, pWindow->Hwnd, 0, 0, 0);
 	}
 	case WM_APP + 1:
 	{
