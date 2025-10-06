@@ -417,7 +417,7 @@ LRESULT WINAPI _APL_WindowProc(HWND Hwnd, UINT Msg, WPARAM Wp, LPARAM Lp)
 	{
 		APL::WindowDesc* pDesc = (APL::WindowDesc*)Wp;
 		_APL_Window* pWindow = (_APL_Window*)pDesc->pParent;
-		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, pDesc->Rect.left, pDesc->Rect.top, pDesc->Rect.right - pDesc->Rect.left, pDesc->Rect.bottom - pDesc->Rect.top, pWindow->Hwnd, 0, 0, 0);
+		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, pDesc->Rect.left, pDesc->Rect.top, pDesc->Rect.right - pDesc->Rect.left, pDesc->Rect.bottom - pDesc->Rect.top, pDesc->Hwnd, 0, 0, 0);
 	}
 	case WM_APP + 1:
 	{
