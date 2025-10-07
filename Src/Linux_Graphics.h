@@ -10,7 +10,7 @@ struct _APL_UploadBuffer
 {
 
 };
-struct _APL_ObjectBuffer
+struct _APL_VertexBuffer
 {
 
 };
@@ -75,7 +75,7 @@ namespace APL
 	{
 	
 	};
-	class ObjectBuffer : _APL_ObjectBuffer
+	class VertexBuffer : _APL_VertexBuffer
 	{
 
 	};

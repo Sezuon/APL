@@ -53,7 +53,7 @@ struct _APL_UploadBuffer
 {
 	_ComPtr<ID3D12Resource> pResource;
 };
-struct _APL_ObjectBuffer
+struct _APL_VertexBuffer
 {
 	_ComPtr<ID3D12Resource> pResource;
 	D3D12_VERTEX_BUFFER_VIEW vbv{};
@@ -119,7 +119,7 @@ namespace APL
 	{
 
 	};
-	class ObjectBuffer : _APL_ObjectBuffer
+	class VertexBuffer : _APL_VertexBuffer
 	{
 	public:
 		UINT64 Size()
@@ -252,9 +252,9 @@ namespace APL
 			Temp.ptr += DescriptorSlot * SamplerIncrementSize;
 			pCommandList->SetGraphicsRootDescriptorTable(RootSlot, Temp);
 		}
-		VOID Draw(ObjectBuffer* pObject, UINT TotalObjects)
+		VOID Draw(VertexBuffer* pObject, UINT TotalObjects)
 		{
-			_APL_ObjectBuffer* Object = (_APL_ObjectBuffer*)pObject;
+			_APL_VertexBuffer* Object = (_APL_VertexBuffer*)pObject;
 
 			for(UINT16 a{}; a < TotalObjects; a++)
 			{
@@ -718,9 +718,9 @@ namespace APL
 
 			return 1;
 		}
-		INT NewObjectBuffer(VertexType Vertex, TopologyLayout Layout, UINT64 TotalVertices, ObjectBuffer* pObject)
+		INT NewObjectBuffer(VertexType Vertex, TopologyLayout Layout, UINT64 TotalVertices, VertexBuffer* pObject)
 		{
-			_APL_ObjectBuffer* Object = (_APL_ObjectBuffer*)pObject;
+			_APL_VertexBuffer* Object = (_APL_VertexBuffer*)pObject;
 			D3D12_HEAP_PROPERTIES hp{ D3D12_HEAP_TYPE_DEFAULT };
 			D3D12_RESOURCE_DESC rd{};
 			rd.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
@@ -876,9 +876,9 @@ namespace APL
 
 			return 1;
 		}
-		INT CopyToObject(ObjectBuffer* pDst, UINT64 DstOffset, UploadBuffer* pSrc, UINT64 SrcOffset, UINT32 TotalVertices)
+		INT CopyToObject(VertexBuffer* pDst, UINT64 DstOffset, UploadBuffer* pSrc, UINT64 SrcOffset, UINT32 TotalVertices)
 		{
-			_APL_ObjectBuffer* dst = (_APL_ObjectBuffer*)pDst;
+			_APL_VertexBuffer* dst = (_APL_VertexBuffer*)pDst;
 			_APL_UploadBuffer* src = (_APL_UploadBuffer*)pSrc;
 
 			D3D12_RESOURCE_BARRIER rb[2]{};
