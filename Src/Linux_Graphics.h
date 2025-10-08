@@ -1,3 +1,7 @@
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <vulkan/vulkan.h>
+
 struct _APL_Adapter
 {
 
@@ -41,19 +45,14 @@ struct _APL_Window
 
 namespace APL
 {
-	struct Rect
+	struct RECT
 	{
 		INT left;
 		INT top;
 		INT bottom;
 		INT right;
 	};
-
-	struct ShaderByteCode
-	{
-		LPVOID pShader;
-		UINT64 Size;
-	};
+	typedef RECT Rect;
 
 	enum VertexType
 	{
@@ -87,13 +86,11 @@ namespace APL
 	{
 
 	};
+	//These buffers hold descriptions of either your constant buffers or samplers.
 	class DescriptorBuffer : _APL_DescriptorBuffer
 	{
 
 	};
-	
-	//Is this even used on the Win32 side?
-	typedef LPVOID DescriptorHandle;
 
 	//Don't know what values are needed here just yet.
 	enum TopologyType
@@ -110,6 +107,11 @@ namespace APL
 		LineStrip,
 		TriangleList,
 		TriangleStrip,
+	};
+	struct ShaderByteCode
+	{
+		LPVOID pShader;
+		UINT64 Size;
 	};
 	struct ShaderPackDesc
 	{
@@ -142,6 +144,61 @@ namespace APL
 
 	typedef VOID(*DrawProc)(GraphicsContext);
 	
+	class Window;
+	struct WindowReference
+	{
+		UINT NoImpl;
+		bool operator==(Window w);
+	};
+	
+	struct Window : _APL_Window
+	{
+	public:
+		~Window()
+		{
+			
+		}
+		VOID Show(UINT ShowCmd)
+		{
+			
+		}
+		VOID Hide(UINT ShowCmd)
+		{
+			
+		}
+		VOID SetTitle(LPCWSTR Title)
+		{
+			
+		}
+		RECT GetRect()
+		{
+			return Rect{};
+		}
+		operator WindowReference()
+		{
+			//return WindowReference{this->Hwnd};
+			return WindowReference{};
+		}
+		bool operator==(WindowReference wr)
+		{
+			
+			return false;
+		}
+	};
+	bool WindowReference::operator==(Window w)
+	{
+		
+		return false;
+	}
+	struct WindowDesc
+	{
+		Rect WindowRect;
+		//What would be the HWND equivalant here?
+		UINT64 HwndPlaceholder;
+		DrawProc pDrawProc;
+	};
+	
+
 	enum InputType
 	{
 		Keyboard, Mouse, Close
@@ -152,40 +209,182 @@ namespace APL
 	};
 	struct InputData
 	{
-		//Impl later.
+		InputType Type;
+		union
+		{
+			struct
+			{
+				USHORT MakeCode;
+				USHORT Flags;
+			}Keyboard;
+			struct
+			{
+				USHORT ButtonFlags;
+				USHORT ButtonData;
+				USHORT LastX;
+				USHORT LastY;
+			}Mouse;
+			WindowReference Window;
+		};
 	};
 
-	struct WindowDesc
-	{
-		Rect WindowRect;
-		//What would be the HWND equivalant here?
-		UINT64 HwndPlaceholder;
-		DrawProc pDrawProc;
-	};
-	struct Window : _APL_Window
-	{
-	public:
-
-	};
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 INT _APL_GraphicsSetup()
 {
-	LPCHAR XdgRuntimeDir = std::getenv("XDG_RUNTIME_DIR");
-	if(XdgRuntimeDir == 0)
-		return 1;
-
-	UINT XdgRuntimeDirLength{};
-	for(; XdgRuntimeDir[XdgRuntimeDirLength++] != *"\0";)
-		;
-
-	sockaddr_un Addr{AF_UNIX};
-	if(XdgRuntimeDirLength > sizeof(Addr.sun_path))
-		return 1;
-
-	memcpy(Addr.sun_path, XdgRuntimeDir, XdgRuntimeDirLength);
 	
 	return 1;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+namespace APL
+{
+	struct AdapterInfo
+	{
+
+	};
+	struct MonitorInfo
+	{
+		WCHAR Description[32];
+		Rect MonitorRect;
+		Rect WorkRect;
+	};
+	class Device : _APL_Device
+	{
+	public:
+		INT NewUploadBuffer(UINT64 Size, UploadBuffer* pUpload)
+		{
+			
+			return 1;
+		}
+		INT NewObjectBuffer(VertexType Vertex, TopologyLayout Layout, UINT64 TotalVertices, VertexBuffer* pObject)
+		{
+			return 1;
+		}
+		INT NewConstantBuffer(UINT64 Size, ConstantBuffer* pConstant)
+		{
+
+			return 1;
+		}
+		INT NewImageBuffer(UINT32 Width, UINT32 Height, ImageBuffer* pImage)
+		{
+			return 1;
+		}
+		INT NewConstantDescriptorBuffer(UINT TotalElements, DescriptorBuffer* pDesc)
+		{
+			return 1;
+		}
+		INT NewSamplerDescriptorBuffer(UINT TotalElements, DescriptorBuffer* pDesc)
+		{
+			
+			return 1;
+		}
+		INT NewShaderPack(ShaderPackDesc* pDesc, VertexType Vertex, TopologyType Topology, ShaderPack* pPack)
+		{
+			
+
+			return 1;
+		}
+		
+		//Pay close attention to the function being used. HANDLE is synonomous to LPVOID so be careful passing them in.
+		INT CopyPtrToUpload(UploadBuffer* pDst, LPVOID pSrc, UINT64 Size)
+		{
+			
+			return 1;
+		}
+		//Pay close attention to the function being used. HANDLE is synonomous to LPVOID so be careful passing them in.
+		/*INT CopyFileToUpload(UploadBuffer* pDst, HANDLE hFile, UINT32 Size)
+		{
+			
+
+			return 1;
+		}
+		INT CopyFileToUpload(UploadBuffer* pDst, HANDLE hFile, UINT32 Size, UINT64 Offset)
+		{
+			
+
+			return 1;
+		}*/
+		INT CopyToObject(VertexBuffer* pDst, UINT64 DstOffset, UploadBuffer* pSrc, UINT64 SrcOffset, UINT32 TotalVertices)
+		{
+			
+			return 1;
+		}
+		INT CopyToConstant(UploadBuffer* pDst, UINT64 DstOffset, UploadBuffer* pSrc, UINT64 SrcOffset, UINT64 Size)
+		{
+			
+			return 1;
+		}
+		INT CopyToImage(ImageBuffer* pDst, ImageBuffer* pSrc, UINT Width, UINT Height, UINT xDst, UINT yDst)
+		{
+			
+
+			return 1;
+		}
+		INT CopyToImage(ImageBuffer* pDst, UploadBuffer* pSrc, UINT Width, UINT Height, UINT xDst, UINT yDst)
+		{
+			
+			return 1;
+		}
+		INT ExecuteCopyCommands()
+		{
+			
+			return 1;
+		}
+
+		VOID NewConstantDescriptor(ImageBuffer* pImage, UINT Element, DescriptorBuffer* pDesc)
+		{
+			
+		}
+		VOID NewSamplerDescriptor(UINT Element, DescriptorBuffer* pDesc)
+		{
+			
+		}
+
+		INT NewWindow(WindowDesc* pDesc, Window* pWindow)
+		{
+			
+
+			return 1;
+		}
+
+		~Device()
+		{
+			
+		}
+	};
+	class Adapter : _APL_Adapter
+	{
+	public:
+		INT GetAdapterInfo(AdapterInfo* pInfo)
+		{
+			return 1;
+		}
+		INT GetMonitorInfo(UINT Monitor, MonitorInfo* pInfo)
+		{
+			return 1;
+		}
+		INT NewDevice(Device* pDevice)
+		{
+			
+			return 1;
+		}
+		~Adapter()
+		{
+
+		}
+	};
+	INT NewAdapter(UINT AdapterIndex, Adapter* pAdapter)
+	{
+		
+		return 1;
+	}
+	VOID GetInput(InputData* pInput)
+	{
+		
+	}
 }

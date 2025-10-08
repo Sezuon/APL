@@ -98,7 +98,6 @@ struct _APL_Window
 namespace APL
 {
 	typedef RECT Rect;
-	typedef D3D12_SHADER_BYTECODE ShaderByteCode;
 
 	enum VertexType
 	{
@@ -139,7 +138,6 @@ namespace APL
 	{
 
 	};
-	typedef D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHandle;
 
 	enum TopologyType
 	{
@@ -155,6 +153,7 @@ namespace APL
 		TriangleList = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		TriangleStrip = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP
 	};
+	typedef D3D12_SHADER_BYTECODE ShaderByteCode;
 	struct ShaderPackDesc
 	{
 		ShaderByteCode VS;
@@ -264,6 +263,7 @@ namespace APL
 			}
 		}
 	};
+	
 	//typedef INT(*WindowSetupProc)();
 	typedef VOID(*DrawProc)(GraphicsContext);
 	
@@ -311,7 +311,6 @@ namespace APL
 			return false;
 		}
 	};
-
 	bool WindowReference::operator==(Window w)
 	{
 		_APL_Window& W = (_APL_Window&)w;
@@ -319,7 +318,6 @@ namespace APL
 			return true;
 		return false;
 	}
-	
 	struct WindowDesc
 	{
 		Rect Rect;
@@ -1085,7 +1083,7 @@ namespace APL
 				pO->Release();
 			}
 
-			return 0;
+			return 0;//Failure
 		}
 		INT NewDevice(Device* pDevice)
 		{

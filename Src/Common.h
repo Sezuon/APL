@@ -23,10 +23,6 @@ typedef DOUBLE* LPDOUBLE;
 #endif
 
 #ifdef __linux__
-#include <cstdlib>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <Vulkan.h>
 typedef void VOID;
 typedef char CHAR;
 typedef wchar_t WCHAR;
@@ -51,6 +47,10 @@ typedef float FLOAT;
 typedef double DOUBLE;
 typedef VOID* LPVOID;
 typedef CHAR* LPCHAR;
+typedef CHAR* LPSTR;
+typedef WCHAR* LPWSTR;
+typedef const CHAR* LPCSTR;
+typedef const WCHAR* LPCWSTR;
 typedef INT8* LPINT8;
 typedef INT16* LPINT16;
 typedef INT32* LPINT32;
