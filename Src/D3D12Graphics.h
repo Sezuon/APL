@@ -92,10 +92,9 @@ struct _APL_DescriptorHandle
 
 namespace APL
 {
-	typedef RECT Rect;
-	class GraphicsContext;
-	typedef VOID (*RenderProc)(GraphicsContext);
+	
 	class Window;
+
 	struct WindowReference
 	{
 		HWND Hwnd;
@@ -105,18 +104,14 @@ namespace APL
 			return Hwnd;
 		}
 	};
+
 	struct WindowInfo
 	{
 		Rect Rect;
-		WindowReference ParentWindow;
+		Window* ParentWindow;
 		RenderProc RenderProc;
 	};
 
-	class Buffer;
-	class BufferAddress : _APL_BufferAddress
-	{
-
-	};
 	class VertexBufferView : _APL_VertexBufferView
 	{
 	public:
@@ -129,17 +124,6 @@ namespace APL
 	class DescriptorHeap : _APL_DescriptorHeap
 	{
 	public:
-	};
-
-	struct Vertex24
-	{
-		FLOAT Pos[4];
-		FLOAT UV[2];
-	};
-	struct Vertex32
-	{
-		FLOAT Pos[4];
-		FLOAT Color[4];
 	};
 
 	enum InputLayout;
@@ -178,6 +162,7 @@ namespace APL
 			MaxDepth = MaxDepth;
 		}
 	};
+
 
 	class GraphicsContext : _APL_GraphicsContext
 	{
@@ -280,7 +265,7 @@ LRESULT WINAPI _APL_MsgProc(HWND Hwnd, UINT Msg, WPARAM Wp, LPARAM Lp)
 	case WM_APP + 0x8000:
 	{
 		APL::WindowInfo* Desc = (APL::WindowInfo*)Wp;
-		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, Desc->Rect.left, Desc->Rect.top, Desc->Rect.right - Desc->Rect.left, Desc->Rect.bottom - Desc->Rect.top, Desc->ParentWindow, 0, 0, 0);
+		return (LRESULT)CreateWindowEx(WS_EX_LAYERED, L"wc", 0, WS_POPUP, Desc->Rect.left, Desc->Rect.top, Desc->Rect.right - Desc->Rect.left, Desc->Rect.bottom - Desc->Rect.top, *(HWND*)Desc->ParentWindow, 0, 0, 0);
 	}
 	default:
 		return DefWindowProc(Hwnd, Msg, Wp, Lp);
@@ -309,8 +294,6 @@ MainLoop:
 
 DWORD WINAPI _APL_RenderProc(LPVOID pV)
 {
-	const UINT TotalBackBuffers = 4;
-	const UINT TotalCommandLists = 2;
 	struct STACK
 	{
 		HANDLE Event;
@@ -538,9 +521,13 @@ namespace APL
 		{
 			SetWindowText(Hwnd, Title);
 		}
-		VOID Show(UINT ShowCommand)
+		VOID Show()
 		{
-			ShowWindow(Hwnd, ShowCommand);
+			ShowWindow(Hwnd, 1);
+		}
+		VOID Hide()
+		{
+			ShowWindow(Hwnd, 0);
 		}
 		bool operator = (WindowReference a)
 		{
@@ -815,6 +802,7 @@ namespace APL
 
 			return 1;
 		}
+		
 		//Pass in the address of a APL::File only.
 		INT CopyFileToUpload(Buffer* pDst, LPVOID pSrc, UINT32 Size)
 		{
@@ -830,6 +818,7 @@ namespace APL
 
 			return 1;
 		}
+		
 		INT CopyFileToUpload(Buffer* pDst, LPVOID pSrc, UINT32 Size, UINT64 Offset)
 		{
 			_APL_Buffer* Buffer = (_APL_Buffer*)pDst;
@@ -877,6 +866,7 @@ namespace APL
 			rb[1].Transition.StateAfter = D3D12_RESOURCE_STATE_COMMON;
 			pCommandList->ResourceBarrier(2, rb);
 		}
+		
 		VOID CopyUploadToTexture(Buffer* pDstTexture, UINT xPos, UINT yPos, UINT zPos, Buffer* pSrcUpload, UINT32 Width, UINT32 Height, DXGI_FORMAT Format, UINT32 RowPitch)
 		{
 			_APL_Buffer* Dst = (_APL_Buffer*)pDstTexture;
@@ -933,12 +923,6 @@ namespace APL
 			return 1;
 		}
 
-		INT CopyToVertex()
-		{
-
-			return 1;
-		}
-
 		INT CreateWindow(WindowInfo* pInfo, Window* pWindow)
 		{
 			_APL_Window* Window = (_APL_Window*)pWindow;
@@ -969,8 +953,6 @@ namespace APL
 			return 1;
 		}
 	};
-	typedef DXGI_ADAPTER_DESC DeviceInfo;
-	typedef MONITORINFOEX MonitorInfo;
 
 	class Device : _APL_Device
 	{

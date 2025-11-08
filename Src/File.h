@@ -4,11 +4,12 @@
 
 namespace APL
 {
+	#ifdef _WIN32
 	class File
 	{
 		HANDLE hFile;
 	public:
-		File(LPCWSTR File, DWORD Access, DWORD Disposition)
+		File(LPCWSTR File, UINT32 Access, UINT32 Disposition)
 		{
 			hFile = CreateFile(File, Access, 0, 0, Disposition, 0, 0);
 		}
@@ -55,4 +56,51 @@ namespace APL
 			return WriteFile(hFile, pBuffer, Size, 0, &ol);
 		}
 	};
+
+
+#else
+
+	class File
+	{
+	public:
+		File(LPCWSTR File, UINT32 Access, UINT32 Disposition)
+		{
+
+		}
+		~File()
+		{
+
+		}
+		bool Open()
+		{
+
+			return 1;
+		}
+		UINT64 Size()
+		{
+			
+			return 1;
+		}
+		INT Read(LPVOID pBuffer, UINT32 Size)
+		{
+			return 1;
+		}
+		INT Read(LPVOID pBuffer, UINT32 Size, UINT64 Offset)
+		{
+			
+
+			return 1;
+		}
+		INT Write(LPVOID pBuffer, UINT32 Size)
+		{
+			return 1;
+		}
+		INT Write(LPVOID pBuffer, UINT32 Size, UINT64 Offset)
+		{
+			return 1;
+		}
+	};
+
+#endif
+
 }
